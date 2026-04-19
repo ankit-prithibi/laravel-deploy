@@ -12,6 +12,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CategoryController extends Controller
 {
+    /**
+     * Display a paginated listing of categories.
+     */
     public function index(): AnonymousResourceCollection
     {
         $categories = Category::query()->latest()->paginate();
@@ -21,6 +24,9 @@ class CategoryController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created category in storage.
+     */
     public function store(StoreCategoryRequest $request): JsonResponse
     {
         $category = Category::create($request->validated());
@@ -33,6 +39,9 @@ class CategoryController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * Display the specified category.
+     */
     public function show(Category $category): CategoryResource
     {
         return CategoryResource::make($category)->additional([
@@ -40,6 +49,9 @@ class CategoryController extends Controller
         ]);
     }
 
+    /**
+     * Update the specified category in storage.
+     */
     public function update(UpdateCategoryRequest $request, Category $category): CategoryResource
     {
         $category->update($request->validated());
@@ -49,6 +61,9 @@ class CategoryController extends Controller
         ]);
     }
 
+    /**
+     * Remove the specified category from storage.
+     */
     public function destroy(Category $category): JsonResponse
     {
         $category->delete();
