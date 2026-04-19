@@ -1,38 +1,19 @@
-name: Deploy Laravel to EC2
+script: |
+  set -e
+  cd /var/www/laravel-app
 
-on:
-  push:
-    branches:
-      - main
+  echo "Syncing code with GitHub..."
+  git fetch origin
+  git reset --hard origin/main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  echo "Installing composer dependencies..."
+  composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  echo "Running Laravel commands..."
+  php artisan migrate --force
+  php artisan optimize:clear
+  php artisan config:cache
+  php artisan route:cache
+  php artisan view:cache
 
-      - name: Deploy to EC2 over SSH
-        uses: appleboy/ssh-action@v1.2.2
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            set -x
-            whoami
-            pwd
-            ls -la /var/www
-            cd /var/www/laravel-app
-            pwd
-            git status
-            git pull origin main
-            which composer
-            composer --version
-            php --version
-            php artisan migrate --force
-            php artisan optimize:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+  echo "Deployment completed successfully."
