@@ -39,7 +39,7 @@ class CategoryApiTest extends TestCase
 
         $response
             ->assertCreated()
-            ->assertJsonPath('message', 'Category created successfully.')
+            ->assertJsonPath('message', 'Category created.')
             ->assertJsonPath('data.name', 'Home Appliances')
             ->assertJsonPath('data.slug', 'home-appliances');
 
